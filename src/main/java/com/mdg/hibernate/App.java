@@ -13,22 +13,32 @@ import org.hibernate.query.Query;
 
 import com.mdg.hibernate.annotations.Author;
 import com.mdg.hibernate.annotations.Book;
+import com.mdg.hibernate.annotations.Publisher;
+import com.mdg.hibernate.annotations.Repository;
 
 /**
  * Hello world!
  *
  */
 public class App {
+
+	static int c = 1;
+
 	public static void main(String[] args) {
 
 		final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 		final Session session = sessionFactory.openSession();
 		final Book book = new Book("93939398948 ", "Java 8");
-		Arrays.stream("Raoul-Gabriel Urma,Mario Fusco,Alan Mycroft".split(",")).map(name -> new Author(name))
-				.forEach(author -> {
+		Arrays.stream("Raoul-Gabriel Urma,Mario Fusco,Alan Mycroft".split(","))
+				.map(name -> new Author(name, name.replace(" ", "") + "@gmail.com")).forEach(author -> {
+
+					Publisher publisher = new Publisher("Oriel" + c++, "oriel@gmail.com", "12313213324");
+					author.setPublisher(publisher);
+					publisher.getAuthors().add(author);
 					author.getBooks().add(book);
 					book.getAuthors().add(author);
 					session.save(author);
+					session.save(publisher);
 				});
 		session.beginTransaction();
 		session.save(book);
@@ -49,5 +59,17 @@ public class App {
 		for (Book b : books) {
 			System.out.println(b);
 		}
+		
+		//List<Author> authors = Repository.getAuthors(session);
+		
+		List<Author> authors = Repository.getAuthorsByCriteria(session);
+		
+		for(Author author : authors) {
+			System.out.println(author);
+		}
+		
+		System.out.println(Repository.getNativeQuery(session));
+		
+		Repository.batchInsert(session);
 	}
 }

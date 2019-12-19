@@ -8,6 +8,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 import com.mdg.hibernate.annotations.Author;
 import com.mdg.hibernate.annotations.Book;
+import com.mdg.hibernate.annotations.Publisher;
 
 public class HibernateUtil {
 	private static StandardServiceRegistry registry;
@@ -21,7 +22,7 @@ public class HibernateUtil {
 
 				// Create MetadataSources
 				MetadataSources sources = new MetadataSources(registry).addAnnotatedClass(Author.class)
-						.addAnnotatedClass(Book.class);
+						.addAnnotatedClass(Publisher.class);
 
 				// Create Metadata
 				Metadata metadata = sources.getMetadataBuilder().build();
